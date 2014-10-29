@@ -8,7 +8,7 @@
 	*/
 
 
-	class AIMySQLTable {
+	class aiMySQLTable {
 	
 		private		$_table;
 

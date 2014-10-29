@@ -65,12 +65,12 @@
 						continue;
 					}
 					if (!is_array($mitem[2])) { ?>
-					<li><a href="<?php echo $mitem[2] ?>"><span class="glyphicon <?php echo $mitem[1]; ?>"></span> <?php echo $mitem[0]; ?></a></li>
+					<li><a href="<?php echo $project->url . '/' . $mitem[2] ?>"><span class="glyphicon <?php echo $mitem[1]; ?>"></span> <?php echo $mitem[0]; ?></a></li>
 				<?php 	} else { ?>
 					<li class="dropdown"><a href="#"><span class="glyphicon <?php echo $mitem[1]; ?>"></span> <?php echo $mitem[0]; ?></a>
 						<ul>
 						<?php foreach ($mitem[2] as $subitem) { ?>
-							<li><a href="<?php echo $subitem[1]; ?>"><?php echo $subitem[0]; ?></a></li>
+							<li><a href="<?php echo $project->url . '/' . $subitem[1]; ?>"><?php echo $subitem[0]; ?></a></li>
 						<?php } ?>
 						</ul>
 					</li>

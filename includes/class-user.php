@@ -13,6 +13,9 @@
 			$this->mysql = $mysql;
 
 			$this->_credentials_table = 'ai_users';
+
+			$this->security = new aiUserSecurity($id);
+			$this->profile = new aiUserProfile($id);
 		}
 
 		public function login($username, $password) {
@@ -44,7 +47,12 @@
 		}
 
 		public function isAuthenticated() {
-			return isset($_SESSION['_ai_user_id']);
+			if (isset($_SESSION['_ai_user_id'])) {
+				global $user;
+				$user = new aiUser($_SESSION['_ai_user_id']);
+				return true;
+			}
+			return false;
 
 		}
 
@@ -53,4 +61,18 @@
 		}
 
 
+	}
+
+	class aiUserSecurity extends aiMySQLTable {
+		public function __construct($id = '') {
+			parent::__construct('ai_users');
+			$this->init($id);
+		}
+	}
+
+	class aiUserProfile extends aiMySQLTable {
+		public function __construct($id = '') {
+			parent::__construct('ai_user_details');
+			$this->init($id);
+		}
 	}
