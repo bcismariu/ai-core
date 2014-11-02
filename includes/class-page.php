@@ -1,6 +1,6 @@
 <?php
 
-	class AIPage {
+	class aiPage {
 	
 		public	$title = '';
 		public	$header = '';

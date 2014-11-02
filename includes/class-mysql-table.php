@@ -4,6 +4,8 @@
 
 		!!!	it uses a global $mysql instance of $mysql
 
+		https://gitlab.com/ai-devel/ai-core/wikis/class-mysql-table
+
 		2014 bogdan.cismariu@gmail.com
 	*/
 

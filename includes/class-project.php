@@ -4,7 +4,7 @@
 
 		2014 bogdancismariu@gmail.com
 	*/
-	class AIProject{
+	class aiProject{
 	
 		public $name = 'API Project';
 		public $path = '/var/www/html/root/';

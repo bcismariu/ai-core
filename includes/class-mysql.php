@@ -4,7 +4,7 @@
 		
 		2013 bogdan.cismariu@gmail.com
 	*/
-	class AIMySQL extends mysqli {
+	class aiMySQL extends mysqli {
 	
 		private $query = '';
 		private $result = '';
