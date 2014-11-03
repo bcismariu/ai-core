@@ -11,4 +11,4 @@
 			echo '<pre>' . print_r($var, true) . '</pre>';
 		}
 	}
-?>
+
