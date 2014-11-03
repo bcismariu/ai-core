@@ -18,6 +18,8 @@
     <link href="<?=$project->assets_url?>/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="<?=$project->assets_url?>/css-jquery-ui/jquery-ui-1.10.4.custom.min.css" rel="stylesheet">
 
+    
+
     <!-- Custom styles for this template -->
     <link href="<?=$project->assets_url?>/themes/default/dashboard.css" rel="stylesheet">
 
@@ -33,6 +35,7 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="<?=$project->assets_url?>/jquery/jquery.min.js"></script>
     <script src="<?=$project->assets_url?>/jquery/jquery-ui.min.js"></script>
+    <script src="<?=$project->assets_url?>/jquery/jquery.dataTables.min.js"></script>
     <script src="<?=$project->assets_url?>/bootstrap/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
