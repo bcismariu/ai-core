@@ -36,6 +36,9 @@
     <script src="<?=$project->assets_url?>/jquery/jquery.min.js"></script>
     <script src="<?=$project->assets_url?>/jquery/jquery-ui.min.js"></script>
     <script src="<?=$project->assets_url?>/jquery/jquery.dataTables.min.js"></script>
+    <script src="<?=$project->assets_url?>/jquery/jquery.dataTables.bootstrap.js"></script>
+    <link  href="<?=$project->assets_url?>/jquery/jquery.dataTables.bootstrap.css" rel="stylesheet">
+
     <script src="<?=$project->assets_url?>/bootstrap/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
