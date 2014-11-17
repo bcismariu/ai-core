@@ -13,6 +13,7 @@
 	class aiMySQLTable {
 	
 		private		$_table;
+		private 	$_table_locked = false;
 
 		public		$_cols = array();
 		public		$_keys = array();
@@ -62,12 +63,15 @@
 			}
 			$this->readFromData($input);
 
+			$this->sanitizeKeys();
+
 			if (count($this->_keys) == 1) {
 				// for easier access
 				if (isset($this->{$this->_keys[0]})) {
 					$this->_id = $this->{$this->_keys[0]};
 				}
 			}
+
 		}
 
 		public function save() {
@@ -75,7 +79,6 @@
 				educated guess between insert and update
 			*/
 			global $mysql;
-
 
 			$insert = false;
 			foreach ($this->_keys as $key) {
@@ -119,6 +122,60 @@
 			return false; 
 		}
 
+		protected function lock() {
+			global $mysql;
+			$mysql->query("lock tables $this->_table write");
+			$this->_table_locked = true;
+		}
+
+		protected function unlock() {
+			global $mysql;
+			$mysql->query("unlock tables");
+			$this->_table_locked = false;
+		}
+
+		protected function getCustomAI() {
+			global $mysql;	
+
+			if (isset($this->{$this->_ai_col}) && ($this->{$this->_ai_col} > 0)) {
+				return $this->{$this->_ai_col};
+			}
+
+			$vals = array_intersect_key(get_object_vars($this), array_flip(array_diff($this->_keys, array($this->_ai_col))));
+			$sql = "select
+						max($this->_ai_col) as max
+					from
+						$this->_table
+					where
+						" . $this->getStatements($vals, ' and ');
+			$result = $mysql->query($sql);
+			$row = $result->fetch_assoc();
+			$id = $row['max'] + 1;
+			$this->{$this->_ai_col} = $id;
+			return $id;
+		}
+
+		protected function reserveCustomAI($additionalRequiredFields = '') {
+			global $mysql;
+
+			$a = $additionalRequiredFields;
+			if ($a == '') {
+				$a = array();
+			} else {
+				if (!is_array($a)) {
+					$a = explode(', ', $a);
+				}
+			}
+
+			
+			$this->lock();
+			$id = $this->getCustomAI();
+			$vals = array_intersect_key(get_object_vars($this), array_flip(array_merge($this->_keys, $a)));
+			$mysql->query("insert into $this->_table set " . $this->getStatements($vals, ', '));
+			$this->unlock();
+			return $id;
+		}
+
 		public function insert() {
 			/*
 				no data validation performed.
@@ -127,10 +184,21 @@
 			*/
 			global $mysql;
 
+			if (($this->_ai_col != '') && ($this->_ai_mode == 'custom')) {
+				$this->lock();
+				$id = $this->getCustomAI();
+				$this->_id = $id;
+			}
+
 			$values = array_intersect_key(get_object_vars($this), array_flip($this->_cols));
 			$sql = "insert into $this->_table set " . $this->getStatements($values, ', ');
 			$result = $mysql->query($sql);
-			$id = $mysql->insert_id;
+			if ($this->_ai_mode == 'default') {
+				$id = $mysql->insert_id;
+			}
+			if ($this->_table_locked) {
+				$this->unlock();
+			}
 
 			if ($this->_ai_col != '') {
 				$this->{$this->_ai_col} = $id;
@@ -198,14 +266,22 @@
 			return true;
 		}
 
-		public function select($filter = '1', $fields = '*') {
+		public function select($filter = '1', $fields = '*', $table = '') {
 			global $mysql;
+
+			// preparing fields;
+			$selectFields = $this->prepareFields($fields);
+
+			// preparing table
+			if ($table == '') {
+				$table = $this->_table;
+			}
 
 			$data = array();
 			$sql = "select
-					$fields
+					" . implode(', ', $selectFields) . "
 				from
-					$this->_table
+					$table
 				where
 					$filter
 				";
@@ -219,19 +295,44 @@
 
 		}
 
-		public function num($filter) {
+		public function num($filter = '1', $table = '') {
 			global $mysql;
+
+			if ($table == '') {
+				$table = $this->_table;
+			}
 
 			$sql = "select
 					count(*) as num
 				from
-					$this->_table
+					$table
 				where
 					$filter
 				";
 			$result = $mysql->query($sql);
 			$row = $result->fetch_assoc();
 			return $row['num'];
+		}
+
+		private function prepareFields($fields) {
+			// merges requested fields with the key
+			// @return array();
+			if ($fields == '*') {
+				return array('*');
+			}
+			if (!is_array($fields)) {
+				$fields = explode(',', $fields);
+				foreach ($fields as &$f) {
+					$f = trim($f);
+				}
+				unset($f);
+			}
+			// preparing key
+			$keys = array();
+			foreach ($this->_keys as $k) {
+				$keys[] = $this->_table . '.' . $k;
+			}
+			return array_merge($keys, $fields);
 		}
 
 		private function parseKey($input = '') {
@@ -290,7 +391,17 @@
 			return $pairs;
 		}
 
-		private function getStatements($array, $join = ', ') {
+		private function sanitizeKeys() {
+			foreach ($this->_keys as $k) {
+				if (isset($this->$k)) {
+					if (($this->$k == '') || ($this->$k == 0)) {
+						unset ($this->$k);
+					}
+				}
+			}
+		}
+
+		protected function getStatements($array, $join = ', ') {
 			global $mysql;
 	
 			$statements = array();
@@ -300,7 +411,7 @@
 			return ' ' . implode($join, $statements) . ' ';
 		}
 
-		private function readFromDatabase($key) {
+		protected function readFromDatabase($key) {
 			global $mysql;
 
 			$sql = "select
@@ -317,7 +428,7 @@
 			return $result->fetch_assoc();
 		}
 
-		private function readFromData($data) {
+		protected function readFromData($data) {
 			$values = array_intersect_key($data, array_flip($this->_cols));
 			foreach ($values as $name => $value) {
 				$this->$name = $value;

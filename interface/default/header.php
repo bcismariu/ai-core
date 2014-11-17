@@ -43,6 +43,8 @@
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
 	<script src="<?=$project->assets_url?>/js/dropdown-menu.js"></script>
+	<script src="<?=$project->assets_url?>/js/ajax-crud.js"></script>
+	<script src="<?=$project->assets_url?>/js/datepicker.js"></script>
 
    </head>
 

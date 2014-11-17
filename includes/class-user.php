@@ -16,6 +16,15 @@
 
 			$this->security = new aiUserSecurity($id);
 			$this->profile = new aiUserProfile($id);
+
+			$this->_id = '';
+			$this->_name = '';
+			if (isset($this->security->user_id)) {
+				$this->_id = $this->security->user_id;
+			}
+			if (isset($this->profile->name)) {
+				$this->_name = $this->profile->name;
+			}
 		}
 
 		public function login($username, $password) {
@@ -40,6 +49,8 @@
 
 		public function logout() {
 			unset($_SESSION['_ai_user_id']);
+			unset($_SESSION);
+			session_destroy();
 		}
 
 		private function Authenticate($user_id) {
@@ -53,7 +64,19 @@
 				return true;
 			}
 			return false;
+		}
 
+		public function setCurrentProject($projectId) {
+			$_SESSION['_ai_user_project'] = $projectId;
+			$this->_project_id = $projectId;
+		}
+
+		public function hasProject() {
+			if (isset($_SESSION['_ai_user_project'])) {
+				$this->_project_id = $_SESSION['_ai_user_project'];
+				return true;
+			}
+			return false;
 		}
 
 		public function hasRight($right = '', $type = 'all') {
