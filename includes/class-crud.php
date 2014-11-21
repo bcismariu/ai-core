@@ -1,6 +1,6 @@
 <?php
 	/*
-		Create a CRUD interface from an extended AIMySQLTable object
+		Create a CRUD interface from an extended aiMySQLTable object
 
 
 		limitations:
@@ -10,7 +10,7 @@
 		2014 bogdan.cismariu@gmail.com
 	*/
 
-	class AICRUD {
+	class aiCRUD {
 
 		public function __construct() {
 			$this->search = '';

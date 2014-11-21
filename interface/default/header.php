@@ -40,7 +40,7 @@
     <link  href="<?=$project->assets_url?>/jquery/jquery.dataTables.bootstrap.css" rel="stylesheet">
 
     <script src="<?=$project->assets_url?>/bootstrap/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<!--	<script type="text/javascript" src="https://www.google.com/jsapi"></script>  -->
 
 	<script src="<?=$project->assets_url?>/js/dropdown-menu.js"></script>
 	<script src="<?=$project->assets_url?>/js/ajax-crud.js"></script>
