@@ -173,6 +173,7 @@
 			$vals = array_intersect_key(get_object_vars($this), array_flip(array_merge($this->_keys, $a)));
 			$mysql->query("insert into $this->_table set " . $this->getStatements($vals, ', '));
 			$this->unlock();
+			$this->_id = $id;
 			return $id;
 		}
 
