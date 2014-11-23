@@ -15,13 +15,13 @@
     <title><?=$this->title?></title>
 
     <!-- Bootstrap core CSS -->
-    <link href="<?=$project->assets_url?>/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="<?=$project->assets_url?>/css-jquery-ui/jquery-ui-1.10.4.custom.min.css" rel="stylesheet">
+    <link href="<?=$project->assets_url?>bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?=$project->assets_url?>css-jquery-ui/jquery-ui-1.10.4.custom.min.css" rel="stylesheet">
 
     
 
     <!-- Custom styles for this template -->
-    <link href="<?=$project->assets_url?>/themes/default/dashboard.css" rel="stylesheet">
+    <link href="<?=$project->assets_url?>themes/default/dashboard.css" rel="stylesheet">
 
   
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -33,18 +33,18 @@
         <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="<?=$project->assets_url?>/jquery/jquery.min.js"></script>
-    <script src="<?=$project->assets_url?>/jquery/jquery-ui.min.js"></script>
-    <script src="<?=$project->assets_url?>/jquery/jquery.dataTables.min.js"></script>
-    <script src="<?=$project->assets_url?>/jquery/jquery.dataTables.bootstrap.js"></script>
-    <link  href="<?=$project->assets_url?>/jquery/jquery.dataTables.bootstrap.css" rel="stylesheet">
+    <script src="<?=$project->assets_url?>jquery/jquery.min.js"></script>
+    <script src="<?=$project->assets_url?>jquery/jquery-ui.min.js"></script>
+    <script src="<?=$project->assets_url?>jquery/jquery.dataTables.min.js"></script>
+    <script src="<?=$project->assets_url?>jquery/jquery.dataTables.bootstrap.js"></script>
+    <link  href="<?=$project->assets_url?>jquery/jquery.dataTables.bootstrap.css" rel="stylesheet">
 
-    <script src="<?=$project->assets_url?>/bootstrap/js/bootstrap.min.js"></script>
+    <script src="<?=$project->assets_url?>bootstrap/js/bootstrap.min.js"></script>
 <!--	<script type="text/javascript" src="https://www.google.com/jsapi"></script>  -->
 
-	<script src="<?=$project->assets_url?>/js/dropdown-menu.js"></script>
-	<script src="<?=$project->assets_url?>/js/ajax-crud.js"></script>
-	<script src="<?=$project->assets_url?>/js/datepicker.js"></script>
+	<script src="<?=$project->assets_url?>js/dropdown-menu.js"></script>
+	<script src="<?=$project->assets_url?>js/ajax-crud.js"></script>
+	<script src="<?=$project->assets_url?>js/datepicker.js"></script>
 
    </head>
 
