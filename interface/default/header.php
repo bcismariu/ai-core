@@ -56,6 +56,8 @@
           <a class="navbar-brand" href="#"><?=$project->name?></a>
         </div>
       </div>
+      <div id="mobile_menu" class="hidden-sm hidden-md hidden-lg">
+      </div>
     </div>
 
     <div class="container-fluid">
@@ -87,6 +89,14 @@
 				</ul>
 		
         </div>
+     <script>
+   	  $('#mobile_menu').hide();
+   	  $('#mobile_menu').html($('.sidebar').html());
+   	  $('#mobile_menu').css('background-color', '#f5f5f5');
+   	  $('a[class="navbar-brand"]').click(function() {
+   	  	$('#mobile_menu').toggle();
+   	  });
+   	 </script>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 
 	<h1 class="page-header"><?php echo $this->title; ?></h1>
