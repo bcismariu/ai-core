@@ -65,11 +65,15 @@
 
 			$this->sanitizeKeys();
 
+			$this->_id = '';
 			if (count($this->_keys) == 1) {
 				// for easier access
 				if (isset($this->{$this->_keys[0]})) {
 					$this->_id = $this->{$this->_keys[0]};
 				}
+			}
+			if (($this->_ai_col != '') && (isset($this->{$this->_ai_col}))) {
+				$this->_id = $this->{$this->_ai_col};
 			}
 
 		}
