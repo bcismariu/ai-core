@@ -8,46 +8,77 @@
 		}
 
 		public function capture() {
-			if (isset($_POST['caller']) && ($_POST['caller'] == '_ai_ajax_crud')) {
-				if (isset($_POST['edit'])) {
-					$obj = new $this->class($_POST['edit']);
-					$obj->_ai_ajax_crud_action = 'edit';
-					echo json_encode($obj);
-					die();
+			if ($this->hasAction()) {
+				if ($obj = $this->delete()) {
+					return $this->outputJson($obj);
 				}
-				if (isset($_POST['delete'])) {
-					$obj = new $this->class($_POST['delete']);
-					$obj->delete();
-					$obj = (object) array('_ai_ajax_crud_action' => 'delete');
-					echo json_encode($obj);
-					die();
+				if ($obj = $this->returnData()) {
+					return $this->outputJson($obj);
+				}
+				if ($obj = $this->save()) {
+					return $this->outputJson($obj);
 				}
 			}
+		}
 
+		public function hasAction() {
+			if (isset($_POST['_ai_ajax_crud_action'])) {
+				return true;
+			}
+			if (isset($_POST['caller']) && ($_POST['caller'] == '_ai_ajax_crud')) {
+				if (isset($_POST['edit']) || isset($_POST['delete'])) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public function delete() {
+			$obj = false;
+			if (isset($_POST['delete'])) {
+				$obj = new $this->class($_POST['delete']);
+				$obj->delete();
+				$obj->_ai_ajax_crud_action = 'delete';
+			}
+			return $obj;
+		}
+
+		public function returnData() {
+			$obj = false;
+			if (isset($_POST['edit'])) {
+				$obj = new $this->class($_POST['edit']);
+				$obj->_ai_ajax_crud_action = 'edit';
+			}
+			return $obj;
+		}
+
+		public function save() {
+			$obj = false;
 			if (isset($_POST['_ai_ajax_crud_action'])) {
 				switch ($_POST['_ai_ajax_crud_action']) {
 					case 'edit':
-						global $debug;
-					//	$debug->show($_POST);
 						$obj = new $this->class($_POST);
 						$obj->update();
 						$obj->_ai_ajax_crud_action = 'updated';
-						echo json_encode($obj);
-						die();
+						return $obj;
 						break;
 
 					case 'insert':
 						$obj = new $this->class($_POST);
 						$obj->insert();
 						$obj->_ai_ajax_crud_action = 'insert';
-						echo json_encode($obj);
-						die();
+						return $obj;
 						break;
 
 					default:
 						break;
 				}
 			}
+			return $obj;
+		}
+
+		public function outputJson($obj) {
+			die(json_encode($obj));
 		}
 
 		public function placeButtons($tableId) {
