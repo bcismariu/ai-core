@@ -13,13 +13,30 @@
 		*/
 		protected $project_id;
 
-		public function __construct() {
+		public function __construct($description = '') {
 			global $aiTaggerMySQL, $aiTaggerProjectId;
 			$this->mysql = $aiTaggerMySQL;
 			$this->project_id = $aiTaggerProjectId;
 			$this->table_tags = AI_TAGGER_TABLE_TAGS;
 			$this->table_binds = AI_TAGGER_TABLE_BINDS;
 			$this->tag_separator = AI_TAGGER_SEPARATOR;
+
+			$this->description = $description;
+			$this->input = '_ai_tagger_input';
+		}
+
+		public function deleteTagsFor($element_id = '') {
+			if ($element_id == '') {
+				return false;
+			}
+			$sql = "delete from 
+						$this->table_binds
+					where
+						project_id = $this->project_id
+						and description = '$this->description'
+						and element_id = $element_id
+					";
+			$result = $this->mysql->query($sql);
 		}
 
 		public function bindTags($tagList = '', $element_id = '', $description = '') {
@@ -33,6 +50,9 @@
 
 			if (($tagList == '') || ($element_id == '')) {
 				return false;
+			}
+			if ($description == '') {
+				$description = $this->description;
 			}
 
 			$tags = explode($this->tag_separator, $tagList);
@@ -75,14 +95,8 @@
 				$ids[] = $tag->_id;
 			}
 
-			$sql = "delete from 
-						$this->table_binds
-					where
-						project_id = $this->project_id
-						and description = '$description'
-						and element_id = $element_id
-					";
-			$result = $this->mysql->query($sql);
+			// deleting tags
+			$this->deleteTagsFor($element_id);
 
 			$values = array();
 			foreach ($ids as $id) {
@@ -99,6 +113,10 @@
 			if ($element_id == '') {
 				return '';
 			}
+			if ($description == '') {
+				$description = $this->description;
+			}
+
 			$list = array();
 			$sql = "select
 						tag_name
@@ -122,17 +140,25 @@
 
 
 		public function editFor($element_id = '', $description = '') {
+			if ($description == '') {
+				$description = $this->description;
+			}
+
 			$list = $this->getTagListFor($element_id, $description);
 			?>
-			<input type="text" name="_ai_tagger_input" class="form-control" value="<?=$list?>">
+			<input type="text" name="<?=$this->input?>" class="form-control" value="<?=$list?>">
 			<?php
 		}	
 
 		public function captureFor($element_id = '', $description = '') {
-			if (!isset($_POST['_ai_tagger_input'])) {
+			if (!isset($_POST[$this->input])) {
 				return false;
 			}
-			$this->bindTags($_POST['_ai_tagger_input'], $element_id, $description);
+			if ($description == '') {
+				$description = $this->description;
+			}
+
+			$this->bindTags($_POST[$this->input], $element_id, $description);
 		}
 
 
