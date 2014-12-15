@@ -91,6 +91,10 @@
 			}
 			$key = array('user_id' => $user_id, 'project_id' => $project_id);
 			$rights = new aiUserRights($key);
+			if (!isset($rights->rights)) {
+				// user nu exista in baza de date cu drepturi
+				return;
+			}
 			$this->_rights = $this->parseRights($rights->rights);
 			$this->_roles = $this->parseRights($rights->roles);
 		}
@@ -98,7 +102,7 @@
 		public function hasRole($role = '') {
 			return $this->hasRight($role, 'all', 'role');
 		}
-		
+
 		public function hasRight($right = '', $type = 'all', $role = 'right') {
 			// make sure you call getRights before
 			if (!is_array($right)) {
