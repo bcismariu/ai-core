@@ -220,6 +220,13 @@
 			*/
 			global $mysql;
 
+			foreach ($this->_keys as $key) {
+				if (!isset($this->$key) || (!$this->$key)) {
+					// invalid or incomplete key
+					// this update is dangerous as it would alter multiple rows
+					return false;
+				}
+			}
 			$values = array_intersect_key(get_object_vars($this), array_flip(array_diff($this->_cols, $this->_keys)));
 			$keys = array_intersect_key(get_object_vars($this), array_flip($this->_keys));
 			$sql = "update $this->_table set " . $this->getStatements($values, ', ') . " where " . $this->getStatements($keys, ' and ');
