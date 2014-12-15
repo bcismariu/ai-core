@@ -25,6 +25,9 @@
 			if (isset($this->profile->name)) {
 				$this->_name = $this->profile->name;
 			}
+
+			$this->_rights = array();
+			$this->_roles = array();
 		}
 
 		public function login($username, $password) {
@@ -79,8 +82,48 @@
 			return false;
 		}
 
-		public function hasRight($right = '', $type = 'all') {
+		public function getRights($project_id = 0, $user_id = '') {
+			if ($user_id == '') {
+				$user_id = $this->_id;
+			}
+			if (($project_id == 0) && isset($this->_project_id)) {
+				$project_id = $this->_project_id;
+			}
+			$key = array('user_id' => $user_id, 'project_id' => $project_id);
+			$rights = new aiUserRights($key);
+			$this->_rights = $this->parseRights($rights->rights);
+			$this->_roles = $this->parseRights($rights->roles);
+		}
 
+		public function hasRole($role = '') {
+			return $this->hasRight($role, 'all', 'role');
+		}
+		
+		public function hasRight($right = '', $type = 'all', $role = 'right') {
+			// make sure you call getRights before
+			if (!is_array($right)) {
+				$right = $this->parseRights($right);
+			}
+			$haystack = ($role == 'role') ? $this->_roles : $this->_rights;
+			$intersect = array_intersect($haystack, $right);
+			if ($type = 'all') {
+				return (count($right) == count($intersect));
+			} else {
+				return (count($intersect) > 1);
+			}
+		}
+
+		private function parseRights($string = '') {
+			$string = trim($string);
+			if ($string == '') {
+				return array();
+			}
+			$rights = explode(',', $string);
+			foreach ($rights as &$r) {
+				$r = trim($r);
+			}
+			unset($r);
+			return $rights;
 		}
 
 
@@ -100,4 +143,13 @@
 		}
 	}
 
-	
+	class aiUserRights extends aiMySQLTable {
+		public function __construct($id = '') {
+			$descriptor = array(	'_table' => 'ai_user_rights',
+									'_keys'  => array('user_id', 'project_id')
+								);
+			parent::__construct($descriptor);
+			$this->init($id);
+		}
+	}
+
