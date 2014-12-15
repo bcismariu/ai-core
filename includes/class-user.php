@@ -92,8 +92,10 @@
 			$key = array('user_id' => $user_id, 'project_id' => $project_id);
 			$rights = new aiUserRights($key);
 			if (!isset($rights->rights)) {
-				// user nu exista in baza de date cu drepturi
-				return;
+				$rights->rights = '';
+			}
+			if (!isset($rights->roles)) {
+				$rights->roles = '';
 			}
 			$this->_rights = $this->parseRights($rights->rights);
 			$this->_roles = $this->parseRights($rights->roles);
