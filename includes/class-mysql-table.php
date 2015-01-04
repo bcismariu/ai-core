@@ -224,6 +224,7 @@
 				if (!isset($this->$key) || (!$this->$key)) {
 					// invalid or incomplete key
 					// this update is dangerous as it would alter multiple rows
+					echo 'expected key unset: ' . $this->$key;
 					return false;
 				}
 			}
