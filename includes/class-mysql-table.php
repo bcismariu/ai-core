@@ -283,7 +283,7 @@
 			global $mysql;
 
 			// preparing fields;
-			$selectFields = $this->prepareFields($fields);
+			$selectFields = $this->prepareFields($fields, $table);
 
 			// preparing table
 			if ($table == '') {
@@ -327,7 +327,7 @@
 			return $row['num'];
 		}
 
-		private function prepareFields($fields) {
+		private function prepareFields($fields, $table = '') {
 			// merges requested fields with the key
 			// @return array();
 			if ($fields == '*') {
@@ -340,10 +340,20 @@
 				}
 				unset($f);
 			}
+			// identifing table alias
+			$talias = $this->_table;
+			if (trim($table) != '') {
+				if (preg_match("/$this->_table (\w+)/", $table, $matches)) {
+					$m = $matches[1];
+					if (!in_array($m, array('inner', 'where'))) {
+						$talias = $m;
+					}
+				}
+			}
 			// preparing key
 			$keys = array();
 			foreach ($this->_keys as $k) {
-				$keys[] = $this->_table . '.' . $k;
+				$keys[] = $talias . '.' . $k;
 			}
 			return array_merge($keys, $fields);
 		}

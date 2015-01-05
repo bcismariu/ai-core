@@ -55,10 +55,14 @@
 		public function draw(){
 			// prints the table
 			// @return javascript variable name that refers to the table
-			if ($this->header == '') {
-				$this->header = $this->columns;
+			$columns = array();
+			foreach ($this->columns as $c) {
+				$columns[] = array_pop(explode(' ', $c));
 			}
-			$cols = array_slice($this->columns, 0, count($this->header));
+			if ($this->header == '') {
+				$this->header = $columns;
+			}
+			$cols = array_slice($columns, 0, count($this->header));
 			$id = $this->class . '_datatable';
 ?>
 			<table class="table table-striped table-hover" id="<?=$id?>">
@@ -137,7 +141,7 @@ $(document).ready(function() {
 			}
 			$filter = array();
 			foreach ($this->columns as $c) {
-				$filter[] = $c . ' like "%' . $_POST['search']['value'] . '%"';
+				$filter[] = array_shift(explode(' ', $c)) . ' like "%' . $_POST['search']['value'] . '%"';
 			}
 			return  ' ' . $this->filter . ' and (' . implode(' or ', $filter) . ') ';
 		}
@@ -146,7 +150,7 @@ $(document).ready(function() {
 			// @return string
 			$order = array();
 			foreach ($_POST['order'] as $i => $v) {
-				$order[] = $_POST['columns'][$v['column']]['data'] . ' ' . $v['dir'];
+				$order[] = array_pop(explode(' ', $_POST['columns'][$v['column']]['data'])) . ' ' . $v['dir'];
 			}
 			if (count($order)) {
 				return " order by " . implode(', ', $order);
