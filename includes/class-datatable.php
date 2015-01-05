@@ -57,7 +57,8 @@
 			// @return javascript variable name that refers to the table
 			$columns = array();
 			foreach ($this->columns as $c) {
-				$columns[] = array_pop(explode(' ', $c));
+				$arr = explode(' ', $c);
+				$columns[] = array_pop($arr);
 			}
 			if ($this->header == '') {
 				$this->header = $columns;
@@ -150,7 +151,8 @@ $(document).ready(function() {
 			// @return string
 			$order = array();
 			foreach ($_POST['order'] as $i => $v) {
-				$order[] = array_pop(explode(' ', $_POST['columns'][$v['column']]['data'])) . ' ' . $v['dir'];
+				$arr = explode(' ', $_POST['columns'][$v['column']]['data']);
+				$order[] = array_pop($arr) . ' ' . $v['dir'];
 			}
 			if (count($order)) {
 				return " order by " . implode(', ', $order);
