@@ -7,7 +7,7 @@
 		2014 bogdan.cismariu@gmail.com
 	*/
 	class aiDebug {
-		public function show($var) {
+		public static function show($var) {
 			echo '<pre>' . print_r($var, true) . '</pre>';
 		}
 	}
