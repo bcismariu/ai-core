@@ -14,7 +14,7 @@
 	$defines = array(
 			'AI_TAGGER_TABLE_TAGS' => 'ai_tags',
 			'AI_TAGGER_TABLE_BINDS' => 'ai_tag_binds',
-			'AI_TAGGER_SEPARATOR' => ',',
+			'AI_TAGGER_SEPARATOR' => ', '
 		);
 
 	foreach ($defines as $key => $value) {

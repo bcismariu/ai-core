@@ -55,7 +55,7 @@
 				$description = $this->description;
 			}
 
-			$tags = explode($this->tag_separator, $tagList);
+			$tags = explode(trim($this->tag_separator), $tagList);
 			$search = array();
 			foreach ($tags as &$tag) {
 				$tag = trim($tag);
@@ -138,7 +138,6 @@
 			return implode($this->tag_separator, $list);
 		}
 
-
 		public function editFor($element_id = '', $description = '') {
 			if ($description == '') {
 				$description = $this->description;
@@ -147,6 +146,52 @@
 			$list = $this->getTagListFor($element_id, $description);
 			?>
 			<input type="text" name="<?=$this->input?>" class="form-control" value="<?=$list?>">
+
+			<script>
+			$(function() {
+			    var availableTags = [
+			    	<?='"' . implode('", "', $this->getTags()) . '"'?>
+			    ];
+			    function split( val ) {
+			    	return val.split( /,\s*/ );
+			    }
+			    function extractLast( term ) {
+			    	return split( term ).pop();
+			    }
+			 
+			    $( 'input[name="<?=$this->input?>"]' )
+			    	// don't navigate away from the field on tab when selecting an item
+			    	.bind( "keydown", function( event ) {
+			        	if ( event.keyCode === $.ui.keyCode.TAB &&
+			            		$( this ).autocomplete( "instance" ).menu.active ) {
+			        		event.preventDefault();
+			        	}
+			    	})
+			      	.autocomplete({
+			        	minLength: 0,
+			        	source: function( request, response ) {
+			          		// delegate back to autocomplete, but extract the last term
+			          		response( $.ui.autocomplete.filter(
+			            		availableTags, extractLast( request.term ) ) );
+			        	},
+			        	focus: function() {
+			          		// prevent value inserted on focus
+			          		return false;
+			        	},
+			        	select: function( event, ui ) {
+			          		var terms = split( this.value );
+			          		// remove the current input
+			          		terms.pop();
+			          		// add the selected item
+			          		terms.push( ui.item.value );
+			          		// add placeholder to get the comma-and-space at the end
+			          		terms.push( "" );
+			          		this.value = terms.join( ", " );
+			          		return false;
+			        	}
+			      	});
+			});
+  			</script>
 			<?php
 		}	
 
@@ -159,6 +204,22 @@
 			}
 
 			$this->bindTags($_POST[$this->input], $element_id, $description);
+		}
+
+		public function getTags() {
+			$list = array();
+			$sql = "select
+						tag_name
+					from
+						$this->table_tags
+					where
+						project_id = $this->project_id
+						";
+			$result = $this->mysql->query($sql);
+			while ($row = $result->fetch_assoc()) {
+				$list[] = $row['tag_name'];
+			}
+			return $list;			
 		}
 
 
