@@ -142,7 +142,8 @@ $(document).ready(function() {
 			}
 			$filter = array();
 			foreach ($this->columns as $c) {
-				$filter[] = array_shift(explode(' ', $c)) . ' like "%' . $_POST['search']['value'] . '%"';
+				$explode = explode(' ', $c);
+				$filter[] = array_shift($explode) . ' like "%' . $_POST['search']['value'] . '%"';
 			}
 			return  ' ' . $this->filter . ' and (' . implode(' or ', $filter) . ') ';
 		}
